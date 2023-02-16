@@ -7,7 +7,7 @@ from paloma_sdk.core import AccAddress
 from paloma_sdk.core.msg import Msg
 from paloma_sdk.util.remove_none import remove_none
 from .data import parse_msg
-from .data import MsgCreateJob as MsgCreateJob_pb, Job as Job_pb, Routing as Routing_pb
+from .data import MsgCreateJob as MsgCreateJob_pb, Job as Job_pb, Routing as Routing_pb, Permissions as Permissions_pb, Trigger as Trigger_pb, ScheduleTrigger as ScheduleTrigger_pb
 from paloma_sdk.util.json import JSONSerializable
 
 __all__ = [
@@ -51,7 +51,7 @@ class MsgCreateJob(Msg):
     """"""
 
     creator: AccAddress = attr.ib()
-    job: dict = attr.ib()
+    job: Job = attr.ib()
 
     def to_amino(self) -> dict:
         return {
@@ -79,12 +79,16 @@ class MsgCreateJob(Msg):
                     chainType=self.job["routing"]["chainType"],
                     chainReferenceID=self.job["routing"]["chainReferenceID"]
                 ),
-                # routing=bytes(json.dumps(self.job["routing"]), "utf-8"),
                 definition=self.job["definition"],
                 payload=self.job["payload"],
                 isPayloadModifiable=self.job["isPayloadModifiable"],
-                permissions=bytes(json.dumps(self.job["permissions"]), "utf-8"),
-                triggers=bytes(json.dumps(self.job["triggers"]), "utf-8"),
+                permissions=Permissions_pb(
+                    whitelist=self.job["permissions"]["whitelist"],
+                    blacklist=self.job["permissions"]["blacklist"]
+                ),
+                triggers=[Trigger_pb(
+                    trigger=ScheduleTrigger_pb()
+                )],
                 address=self.job["address"]
             ),
             # bytes(json.dumps(self.job), "utf-8"),

@@ -1,8 +1,44 @@
 import json
 import betterproto
-from typing import Union
+from typing import Union, List
 from dataclasses import dataclass
 from paloma_sdk.core import AccAddress
+
+
+@dataclass(eq=False, repr=False)
+class ScheduleTrigger(betterproto.Message):
+    """
+    """
+
+
+@dataclass(eq=False, repr=False)
+class EventTrigger(betterproto.Message):
+    """
+    """
+
+
+@dataclass(eq=False, repr=False)
+class Trigger(betterproto.Message):
+    """
+    """
+    trigger: ScheduleTrigger = betterproto.message_field(1)
+
+
+@dataclass(eq=False, repr=False)
+class Runner(betterproto.Message):
+    """
+    """
+    chainType: str = betterproto.string_field(1)
+    chainReferenceID: str = betterproto.string_field(2)
+    address: str = betterproto.string_field(2)
+
+
+@dataclass(eq=False, repr=False)
+class Permissions(betterproto.Message):
+    """
+    """
+    whitelist: List[Runner] = betterproto.message_field(1)
+    blacklist: List[Runner] = betterproto.message_field(2)
 
 @dataclass(eq=False, repr=False)
 class Routing(betterproto.Message):
@@ -18,12 +54,12 @@ class Job(betterproto.Message):
     ID: str = betterproto.string_field(1)
     owner: str = betterproto.string_field(2)
     routing: Routing = betterproto.message_field(3)
-    definition: str = betterproto.string_field(4)
-    payload: str = betterproto.string_field(5)
-    isPayloadModifiable: bool = betterproto.bool_field(6)
-    permissions: bytes = betterproto.bytes_field(7)
-    triggers: bytes = betterproto.bytes_field(8)
-    address: str = betterproto.string_field(9)
+    definition: str = betterproto.string_field(5)
+    payload: str = betterproto.string_field(6)
+    isPayloadModifiable: bool = betterproto.bool_field(7)
+    permissions: Permissions = betterproto.message_field(8)
+    triggers: bytes = betterproto.message_field(9)
+    address: str = betterproto.string_field(10)
 
 
 @dataclass(eq=False, repr=False)
